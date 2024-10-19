@@ -4,7 +4,7 @@ const sqlite3 = require('sqlite3').verbose();
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 
-
+const bcrypt = require('bcrypt');
 const app = express();
 app.use(express.json());
 
@@ -30,9 +30,9 @@ app.get('/Home', (req, res) =>{
 })
 
 app.post('/addTask', (req, res) => {
-    const { task, status, description } = req.body;
-    const sql = "INSERT INTO tbl_list (task, status, description) VALUES ( ?, ?, ?)";
-    const value = [task, status, description];
+    const { task, status, description, uid } = req.body;
+    const sql = "INSERT INTO tbl_list (task, status, description, user_id) VALUES ( ?, ?, ?,?)";
+    const value = [task, status, description, uid];
 
     mydb.run(sql, value, function(error) {
         if (error) {
@@ -56,18 +56,27 @@ app.delete('/Home/:id', (req, res) => {
 })
 
 
-app.post('/', (req, res) =>{
-  const sql = "SELECT * FROM tbl_user WHERE `email` = ? AND `password` = ?";
-
-  mydb.all(sql, [req.body.email, req.body.password], (err, rows) => {
-    if (err) {
-      return res.status(500).json(err);
-    }
-    if(rows.length > 0){
-      return res.json("Success");
-    } 
-  })
-})
+app.post('/', (req, res) => {
+    const sql = "SELECT id FROM tbl_user WHERE `email` = ? AND `password` = ?";
+  
+    mydb.all(sql, [req.body.email, req.body.password], (err, rows) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal Server Error", error: err });
+      }
+      // Check if user exists
+      if (rows.length > 0) {
+        const user = rows[0];
+        return res.json({
+            message: "success",
+            userId: user.id,
+        })
+      } else {
+        // Send response when credentials are invalid
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+    });
+  });
+  
 
 
 app.listen(8081, () => {

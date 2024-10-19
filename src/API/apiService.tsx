@@ -14,11 +14,12 @@ export const fetchList = () => {
 };
 
 
-export const createTask = (task: string, status: string, description: string) => {
+export const createTask = (task: string, status: string, description: string, user_id: number) => {
     return axios.post(`${API_BASE_URL}/addTask`, {
         task,
         status,
-        description
+        description,
+        user_id,
     })
         .then((api_response) => api_response.data)
         .catch((error) => {
@@ -35,6 +36,7 @@ export const LoginTask = (email: string, password: string) => {
     .then((api_response) => api_response.data)
     .catch((error) =>{
         console.log(error);
+        console.error("Error creating task:", error);
         throw error
     })
 }

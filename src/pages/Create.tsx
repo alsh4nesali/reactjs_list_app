@@ -11,8 +11,10 @@ import 'primeicons/primeicons.css';                               // PrimeIcons 
 import "./static/Create.css"
 function Create() {
     const [task, setTask] = useState<string>('');
+    
     const [status, setStatus] = useState<string>('');
     const [description, setDescription] = useState<string>('');
+    const [user_id, setUserId] = useState<number>(1);
     // const navigate = useNavigate();
    
     const toast = useRef<Toast | null>(null);
@@ -32,8 +34,9 @@ function Create() {
     }
     const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        
-        createTask(task, status, description)
+        const userId = localStorage.getItem('userId');
+        setUserId(parseInt(userId as string));
+        createTask(task, status, description, user_id)
         .then((response) => {
             console.log(response);
             onSuccess();
