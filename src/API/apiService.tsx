@@ -18,11 +18,12 @@ export const fetchList = () => {
 };
 
 
-export const createTask = (task: string, status: string, description: string, user_id: number) => {
+export const createTask = (task: string, status: string, description: string, taskDate: string,user_id: number) => {
     return axios.post(`${API_BASE_URL}/addTask`, {
         task,
         status,
         description,
+        taskDate,
         user_id,
     })
         .then((api_response) => api_response.data)

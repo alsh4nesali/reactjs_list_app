@@ -24,7 +24,10 @@ function Navigation() {
                 <a className="nav-link active" aria-current="page" href="/Home">Home</a>
                 </li>
                 <li className="nav-item">
-                <a className="nav-link" href="/addTask">Create Task</a>
+                  <a className="nav-link" href="/Dashboard">Dashboard</a>
+                </li>
+                <li className="nav-item">
+                <a className="nav-link" href="/addTask">New task</a>
                 </li>
                 <li className="nav-item">
                 <a className="nav-link" href="#" onClick={handleLogout}>Logout</a>

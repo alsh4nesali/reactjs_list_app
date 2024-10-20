@@ -11,7 +11,7 @@ import 'primeicons/primeicons.css';                               // PrimeIcons 
 import "./static/Create.css"
 function Create() {
     const [task, setTask] = useState<string>('');
-    
+    const [taskDate, setDate] = useState<string>('');
     const [status, setStatus] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [user_id, setUserId] = useState<number>(1);
@@ -36,7 +36,7 @@ function Create() {
         event.preventDefault();
         
         setUserId(parseInt(userId as string));
-        createTask(task, status, description, user_id)
+        createTask(task, status, description, taskDate,user_id)
         .then((response) => {
             console.log(response);
             onSuccess();
@@ -85,10 +85,9 @@ function Create() {
                         <label className="form-label">Project Date</label>
                         <input 
                             type="date" 
-                            className="form-control" 
-                            // value={projectDate} 
-                            // onChange={(e) => setProjectDate(e.target.value)} 
-                            // required 
+                            className="form-control"
+                            onChange={(e) => setDate(e.target.value)}
+                            value={taskDate} 
                         />
                     </div>
                     <div className="col-12 p-2">

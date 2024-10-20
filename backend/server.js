@@ -30,9 +30,9 @@ app.get('/Home', (req, res) =>{
 })
 
 app.post('/addTask', (req, res) => {
-    const { task, status, description, user_id } = req.body;
-    const sql = "INSERT INTO tbl_list (task, status, description, user_id) VALUES ( ?, ?, ?,?)";
-    const value = [task, status, description, user_id];
+    const { task, status, description, user_id, taskDate } = req.body;
+    const sql = "INSERT INTO tbl_list (task, status, description, date_added, user_id) VALUES ( ?, ?,?, ?,?)";
+    const value = [task, status, description, taskDate, user_id];
 
     mydb.run(sql, value, function(error) {
         if (error) {

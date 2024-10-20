@@ -120,7 +120,7 @@ function Home() {
                 onClose={hideDialog}
                 onConfirm={handleOnDelete}
                 >
-                <p>Are you sure you want to delete this Task?</p>
+                <p>Are you sure you want to delete this task?</p>
         </TaskDialog>
 
         <InfoDialog
@@ -132,8 +132,10 @@ function Home() {
                 {
                     list.filter((item) => item.id == taskId).map((item) => (
                     <div>
-                        <p className="fs-5">{item.task}</p>
-                        <p className="fs-6">{item.description}</p>
+                        <p className="fs-5">Date added: {item.date_added}</p>
+                        <hr></hr>
+                        <p className="fs-5">Status: {item.status}</p>
+                        <p className="fs-6">Description: <br></br>{item.description}</p>
                     </div>
 
                     ))
