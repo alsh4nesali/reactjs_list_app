@@ -5,22 +5,45 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import './static/Create.css'
 import TaskDialog from "../components/Dialog"
 import InfoDialog from "../components/InfoDialog"
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 function Home() {
     const [taskId, setTaskId] = useState<number | null>(null);
     const [list, setList] = useState<any[]>([]);
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [infoDialog, setInfoDialog] = useState(false);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        fetchList()
-        .then((data) => {
-            setList(data);
-            console.log(data);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+        const loadTasks = async () => {
+            try {
+                const fetchedTasks = await fetchList();
+                setList(fetchedTasks);
+                console.log(list);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadTasks();
     }, []);
+    
+    if (loading) {
+        return (
+            <div className="text-center mt-5 ">
+                <ProgressSpinner 
+                strokeWidth="8" 
+                fill="var(--surface-ground)" 
+                animationDuration="5s" />    
+                <h5>Loading tasks...</h5>
+             </div>
+        ); 
+    }
+
 
     const onConfirmDelete = (id: number) =>{
         setTaskId(id);
@@ -60,49 +83,33 @@ function Home() {
     <>
         <Navigation />
         <div className="">
-            
             <div className="bg-dark text-white">
                 <h1 className='text-center p-4 fs-2'>Task Overview</h1>
 
-                <table className="table table-secondary table-hover text-center p-5">
-                    <thead>
-                        <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Task Name</th>
-                        <th scope="col">Project Status</th>
-                        <th scope="col">Project Description</th>
-                        <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        list
-                        .filter((item) => item.status != 5)
-                        .map((item) => (
-                                <tr key={item.id}>
-                                    <td>{item.id}</td>
-                                    <td><a href="#" onClick={() => showInformation(item.id)} className="fw-bold text-decoration-none">{item.task}</a></td>
-                                        {
-                                            item.status == 1 ? (
-                                                <td className="text-primary fw-bold">Project Not Started</td>
-                                            ) : item.status == 2 ? (
-                                                <td className="text-danger fw-bold">Project In Progress</td> 
-                                            ) : (
-                                                <td className="text-success fw-bold">Project Completed</td>
-                                            )
-                                        }
-                                    <td>{item.description}</td>
-                                    <td>
-                                        <button className="btn btn-primary"><i className="bi bi-pencil"></i></button>
-                                        <button className="btn btn-danger" onClick={() => onConfirmDelete(item.id)}><i className="bi bi-trash"></i></button>
-                                    </td>
-                                </tr>
-                        ))
-                    }
-                    </tbody>
+                <DataTable value={list.filter(item => item.status !== 5)} className="table" paginator rows={5} responsiveLayout="scroll">
+                    <Column field="id" header="ID" sortable />
+                    <Column field="task" header="Task Name" body={(rowData) => (
+                        <a href="#" onClick={() => showInformation(rowData.id)} className="fw-bold text-decoration-none">{rowData.task}</a>
+                    )} />
+                    <Column field="status" header="Project Status" body={(rowData) => (
+                        rowData.status === 1 ? (
+                            <span className="text-primary fw-bold">Project Not Started</span>
+                        ) : rowData.status === 2 ? (
+                            <span className="text-danger fw-bold">Project In Progress</span>
+                        ) : (
+                            <span className="text-success fw-bold">Project Completed</span>
+                        )
+                    )} />
+                    <Column field="date_added" header="Date Added" />
+                    <Column field="description" header="Project Description" />
+                    <Column body={(rowData) => (
+                        <div>
+                            <button className="btn btn-primary"><i className="bi bi-pencil"></i></button>
+                            <button className="btn btn-danger" onClick={() => onConfirmDelete(rowData.id)}><i className="bi bi-trash"></i></button>
+                        </div>
+                    )} />
+                </DataTable>
 
-                    
-                </table>
             </div>
         </div>
 

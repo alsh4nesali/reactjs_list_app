@@ -5,8 +5,12 @@ const API_BASE_URL  = 'http://localhost:8081';
 
 
 export const fetchList = () => {
-    return axios.get(`${API_BASE_URL}/Home`)
-        .then((api_response) => api_response.data)
+    const userId = localStorage.getItem("userId");
+    
+    return axios.get(`${API_BASE_URL}/Home?userId=${userId}`)
+        .then((api_response) => 
+            api_response.data
+        )
         .catch((error) => {
             console.error("Error fetching list:", error);
             throw error;

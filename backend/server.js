@@ -3,14 +3,13 @@ const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
-
 const bcrypt = require('bcrypt');
 const app = express();
 app.use(express.json());
 
 app.use(cors({}));
 
-const mydb = new sqlite3.Database('./my-database.db', (err) => {
+const mydb = new sqlite3.Database('./todolistdb.db', (err) => {
     if (err) {
         console.error('Database connection failed:', err.message);
     } else {
@@ -20,8 +19,9 @@ const mydb = new sqlite3.Database('./my-database.db', (err) => {
 
 
 app.get('/Home', (req, res) =>{
-    const sql = 'SELECT * FROM tbl_list';
-    mydb.all(sql, (err, rows) => {
+    const userId = req.query.userId;
+    const sql = 'SELECT * FROM tbl_list WHERE user_id = ?';
+    mydb.all(sql,[userId], (err, rows) => {
         if (err) {
             return res.status(500).json(err);
         }
@@ -30,12 +30,13 @@ app.get('/Home', (req, res) =>{
 })
 
 app.post('/addTask', (req, res) => {
-    const { task, status, description, uid } = req.body;
+    const { task, status, description, user_id } = req.body;
     const sql = "INSERT INTO tbl_list (task, status, description, user_id) VALUES ( ?, ?, ?,?)";
-    const value = [task, status, description, uid];
+    const value = [task, status, description, user_id];
 
     mydb.run(sql, value, function(error) {
         if (error) {
+            console.error("SQL Error: ", error.message);
             return res.status(500).json(error);
         }
         return res.json({ id: this.lastID });

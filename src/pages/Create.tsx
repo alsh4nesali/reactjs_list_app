@@ -16,7 +16,7 @@ function Create() {
     const [description, setDescription] = useState<string>('');
     const [user_id, setUserId] = useState<number>(1);
     // const navigate = useNavigate();
-   
+    const userId = localStorage.getItem('userId');
     const toast = useRef<Toast | null>(null);
 
     const onSuccess = () =>{
@@ -34,7 +34,7 @@ function Create() {
     }
     const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const userId = localStorage.getItem('userId');
+        
         setUserId(parseInt(userId as string));
         createTask(task, status, description, user_id)
         .then((response) => {
