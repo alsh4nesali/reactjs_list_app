@@ -18,7 +18,10 @@ const infoDialog: React.FC<DialogProps> = ({ title, message, isVisible, onClose,
     );
 
     return (
-        <Dialog header={title} visible={isVisible} style={{ width: '50vw' }} footer={footer} onHide={onClose}>
+        <Dialog header={title} visible={isVisible} style={{
+             width: '50vw',
+             top: '-10%' 
+             }} footer={footer} onHide={onClose}>
             {children ? children : <p>{message}</p>}
         </Dialog>
     );

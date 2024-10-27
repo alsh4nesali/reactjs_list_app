@@ -10,7 +10,7 @@ function Navigation() {
 
     return (
       <>
-        <nav className="navbar navbar-expand-lg bg-body-tertiary p-4 ">
+        <nav className="navbar navbar-expand-lg bg-body-tertiary p-4 shadow">
         <div className="container-fluid">
             <a className="navbar-brand fw-bold" href="/Home">
             <img src={Logo} alt="Logo" width='90px'></img>

@@ -49,7 +49,7 @@ function Create() {
 
     return (
     <>
-    <div className="bg-dark vh-100">
+    <div className="bg-secondary vh-100">
         <Navigation/>
         <Toast ref={toast} />
         <div className="bg-white container mt-5 p-4 fw-bold shadow-lg">

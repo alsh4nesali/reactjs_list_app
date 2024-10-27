@@ -33,6 +33,20 @@ export const createTask = (task: string, status: string, description: string, ta
         })
 }
 
+export const editTask = (id: number, task: string, status: string, description: string, taskDate: string) => {
+    return axios.put(`${API_BASE_URL}/Home/${id}`, {
+        task,
+        status,
+        description,
+        taskDate
+    })
+    .then((api_response) => api_response.data)
+    .catch((error) => {
+        console.error("Error creating task:", error);
+        throw error;
+    })
+}
+
 export const LoginTask = (email: string, password: string) => {
     return axios.post(`${API_BASE_URL}/`, {
         email,

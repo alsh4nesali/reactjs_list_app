@@ -1,65 +1,83 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { Card } from 'primereact/card';
 import Navigation from './Navigation';
-import '../App.css'; // Your custom styles
+import '../tailwind.css'; // Your custom styles
+import '../App.css';
+import { fetchList } from '../API/apiService';
 
-// Dummy tasks
-const initialTasks = [
-  { id: '1', content: 'Task 1' },
-  { id: '2', content: 'Task 2' },
-  { id: '3', content: 'Task 3' },
-  { id: '4', content: 'Task 4' },
-];
 
 const Dashboard: React.FC = () => {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [list, setList] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const fetchedTasks = await fetchList();
+        setList(fetchedTasks);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadTasks();
+  }, []);
 
   // Handle drag end
   const handleOnDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
-    const newTasks = Array.from(tasks);
-    const [movedItem] = newTasks.splice(result.source.index, 1);
-    newTasks.splice(result.destination.index, 0, movedItem);
+    const updatedList = Array.from(list);
+    const [movedItem] = updatedList.splice(result.source.index, 1);
+    updatedList.splice(result.destination.index, 0, movedItem);
 
-    setTasks(newTasks);
+
+    setList(updatedList);
+    console.log(updatedList);
   };
+
+  const filteredList = list.filter(item => item.status !== 3);
 
   return (
     <>
-        <Navigation/>
-        <div className="Dashboard">
+      <Navigation />
+      <div className="Dashboard">
         <DragDropContext onDragEnd={handleOnDragEnd}>
-            <Droppable droppableId="tasks">
+          <Droppable droppableId="tasks">
             {(provided) => (
-                <div
+              <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                className="task-list"
-                >
-                {/* Draggable Items */}
-                {tasks.map((task, index) => (
-                    <Draggable key={task.id} draggableId={task.id} index={index}>
+                className="items-list mx-auto p-4 bg-secondary"
+              >
+                {filteredList.map((item, index) => (
+                  <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                     {(provided) => (
-                        <div
+                      <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        >
-                        <Card title={`Task ${task.id}`} className="task-card">
-                            <p>{task.content}</p>
+                      >
+                        <Card title={`${item.task}`} className="items-card flex flex-col gap-2 m-2">
+                          <p>Date added: {item.date_added}</p>
+                          {item.status === 1 ? (
+                            <p className="text-primary fw-bold">Project Not Started</p>
+                          ) : item.status === 2 ? (
+                            <p className="text-danger fw-bold">Project In-Progress</p>
+                          ) : (
+                            <p className="text-red fw-bold">Project Completed</p>
+                          )}
                         </Card>
-                        </div>
+                      </div>
                     )}
-                    </Draggable>
+                  </Draggable>
                 ))}
                 {provided.placeholder}
-                </div>
+              </div>
             )}
-            </Droppable>
+          </Droppable>
         </DragDropContext>
-        </div>
+      </div>
     </>
   );
 };
