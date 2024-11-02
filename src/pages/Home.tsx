@@ -22,7 +22,6 @@ function Home() {
         const auth = localStorage.getItem('isAuthenticated');
         const hasShownToast = localStorage.getItem('hasShownToast'); 
 
-        // Check if the user is authenticated and the toast has not been shown yet
         if (auth === 'true' && hasShownToast !== 'true') { 
             if (toast.current) {
                 toast.current.show({
@@ -30,18 +29,17 @@ function Home() {
                     summary: 'Welcome',
                     life: 3000,
                 });
-                // Set hasShownToast to true after showing the toast
                 localStorage.setItem('hasShownToast', 'true'); 
             }
         }
-    }, []); // Only run once on mount
+    }, []);
 
     useEffect(() => {
         const loadTasks = async () => {
             try {
                 const fetchedTasks = await fetchList();
                 setList(fetchedTasks);
-                console.log(fetchedTasks); // Log the fetched tasks
+                console.log(fetchedTasks);
             } catch (err) {
                 console.error(err);
             } finally {
@@ -54,12 +52,12 @@ function Home() {
 
     if (loading) {
         return (
-            <div className="text-center mt-5 ">
+            <div className="flex flex-col items-center mt-5">
                 <ProgressSpinner 
                     strokeWidth="8" 
                     fill="var(--surface-ground)" 
                     animationDuration="5s" />    
-                <h5>Loading tasks...</h5>
+                <h5 className="mt-2">Loading tasks...</h5>
             </div>
         ); 
     }
@@ -101,34 +99,33 @@ function Home() {
             <Navigation />
             <Toast ref={toast} />
             <div className="">
-                <div className="bg-dark text-white">
-                    <h1 className='text-center p-4 fs-2'>Task Overview</h1>
-
-                    <DataTable value={list.filter(item => item.status === 3)} className="table" paginator rows={5} responsiveLayout="scroll">
-                        <Column field="id" header="ID" sortable />
-                        <Column field="task" header="Task Name" body={(rowData) => (
-                            <a href="#" onClick={() => showInformation(rowData.id)} className="fw-bold text-decoration-none">{rowData.task}</a>
-                        )} />
-                        <Column field="status" header="Project Status" body={(rowData) => (
-                            rowData.status === 1 ? (
-                                <span className="text-primary fw-bold">Project Not Started</span>
-                            ) : rowData.status === 2 ? (
-                                <span className="text-danger fw-bold">Project In-Progress</span>
-                            ) : (
-                                <span className="text-success fw-bold">Project Completed</span>
-                            )
-                        )} />
-                        <Column field="date_added" header="Date Added" />
-                        <Column field="description" header="Project Description" />
-                        <Column body={(rowData) => (
-                            <div>
-                                <button className="btn btn-primary"><i className="bi bi-pencil"></i></button>
-                                <button className="btn btn-danger" onClick={() => onConfirmDelete(rowData.id)}><i className="bi bi-trash"></i></button>
-                            </div>
-                        )} />
-                    </DataTable>
-
-                </div>
+                <DataTable value={list.filter(item => item.status === 3)} className="mx-auto" paginator rows={5} responsiveLayout="scroll">
+                    <Column field="id" header="ID" sortable />
+                    <Column field="task" header="Task Name" body={(rowData) => (
+                        <a href="#" onClick={() => showInformation(rowData.id)} className="font-bold text-blue-500 hover:text-blue-800">{rowData.task}</a>
+                    )} />
+                    <Column field="status" header="Project Status" body={(rowData) => (
+                        rowData.status === 1 ? (
+                            <span className="text-blue-400 font-bold">Project Not Started</span>
+                        ) : rowData.status === 2 ? (
+                            <span className="text-red-500 font-bold">Project In-Progress</span>
+                        ) : (
+                            <span className="text-green-500 font-bold">Project Completed</span>
+                        )
+                    )} />
+                    <Column field="date_added" header="Date Added" />
+                    <Column field="description" header="Project Description" />
+                    <Column body={(rowData) => (
+                        <div className="flex space-x-2">
+                            <button className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">
+                                <i className="bi bi-pencil"></i>
+                            </button>
+                            <button className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700" onClick={() => onConfirmDelete(rowData.id)}>
+                                <i className="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    )} />
+                </DataTable>
             </div>
 
             <TaskDialog
@@ -143,18 +140,18 @@ function Home() {
 
             <InfoDialog
                 title="Task Information"
-                message="Are you sure you want to proceed?"
+                message="Task Details"
                 isVisible={infoDialog}
                 onClose={hideInfoDialog}
             >
                 {
                     list.filter((item) => item.id === taskId).map((item) => (
-                        <div key={item.id}>
-                            <p className="fs-5">Date added: {item.date_added}</p>
-                            <hr />
-                            <p className="fs-5">Task title: {item.task}</p>
-                            <p className="fs-5">Status: {item.status}</p>
-                            <p className="fs-6">Description: <br />{item.description}</p>
+                        <div key={item.id} className="text-left">
+                            <p className="text-lg">Date added: {item.date_added}</p>
+                            <hr className="my-2" />
+                            <p className="text-lg">Task title: {item.task}</p>
+                            <p className="text-lg">Status: {item.status}</p>
+                            <p className="text-base">Description: <br />{item.description}</p>
                         </div>
                     ))
                 }

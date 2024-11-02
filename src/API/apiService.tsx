@@ -69,3 +69,15 @@ export const deleteTask = (id: number) => {
         throw error;
     })
 }
+
+
+export const saveListOrder = (orderedList: any[]) => {
+    const userId = localStorage.getItem("userId");
+    
+    return axios.put(`${API_BASE_URL}/Home/saveOrder?userId=${userId}`, orderedList)
+        .then((response) => response.data)
+        .catch((error) => {
+            console.error("Error saving list order:", error);
+            throw error;
+        });
+};

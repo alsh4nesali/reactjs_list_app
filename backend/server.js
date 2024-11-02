@@ -18,16 +18,17 @@ const mydb = new sqlite3.Database('./todolistdb.db', (err) => {
 })
 
 
-app.get('/Home', (req, res) =>{
+app.get('/Home', (req, res) => {
     const userId = req.query.userId;
-    const sql = 'SELECT * FROM tbl_list WHERE user_id = ?';
-    mydb.all(sql,[userId], (err, rows) => {
+    const sql = 'SELECT * FROM tbl_list WHERE user_id = ? ORDER BY order_index'; // Order by the saved index
+    mydb.all(sql, [userId], (err, rows) => {
         if (err) {
             return res.status(500).json(err);
         }
         return res.json(rows);
-    })
-})
+    });
+});
+
 
 app.post('/addTask', (req, res) => {
     const { task, status, description, user_id, taskDate } = req.body;
@@ -78,6 +79,35 @@ app.post('/', (req, res) => {
     });
   });
   
+
+app.put('/Home/saveOrder', (req, res) => {
+    const userId = req.query.userId;
+    const orderedList = req.body;
+
+    // Use a SQL transaction to update the order_index for each item in orderedList
+    const updateOrderQueries = orderedList.map((item, index) => {
+        return new Promise((resolve, reject) => {
+            const sql = 'UPDATE tbl_list SET order_index = ? WHERE id = ? AND user_id = ? AND status != 3';
+            mydb.run(sql, [index, item.id, userId], function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    });
+
+    // Run all updates in parallel and send a response once done
+    Promise.all(updateOrderQueries)
+        .then(() => res.json({ message: 'Order saved successfully' }))
+        .catch(error => {
+            console.error("Failed to save order:", error);
+            res.status(500).json({ message: 'Failed to save order', error });
+        });
+});
+
+
 
 
 app.listen(8081, () => {

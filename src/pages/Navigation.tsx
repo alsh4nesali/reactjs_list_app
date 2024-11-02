@@ -1,44 +1,45 @@
 import { useAuth } from "../auth/Auth";
 import { Navigate } from "react-router-dom";
 import Logo from '../assets/logo.svg';
+
 function Navigation() {
-  const {logout} = useAuth();
+  const { logout } = useAuth();
+  
   const handleLogout = () => {
     logout();
-    return <Navigate to="/"/>
-  }
+    // Using a state or navigate method would be better for navigation
+  };
 
-    return (
-      <>
-        <nav className="navbar navbar-expand-lg bg-body-tertiary p-4 shadow">
-        <div className="container-fluid">
-            <a className="navbar-brand fw-bold" href="/Home">
-            <img src={Logo} alt="Logo" width='90px'></img>
-            </a>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/Home">Home</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="/Dashboard">Dashboard</a>
-                </li>
-                <li className="nav-item">
-                <a className="nav-link" href="/addTask">New task</a>
-                </li>
-                <li className="nav-item">
-                <a className="nav-link" href="#" onClick={handleLogout}>Logout</a>
-                </li>
-            </ul>
-            </div>
+  return (
+    <nav className="bg-gray-800 p-8 shadow">
+      <div className="container mx-auto flex justify-between items-center">
+        <a className="text-white font-bold flex items-center" href="/Home">
+          <img src={Logo} alt="Logo" width='90px' />
+        </a>
+        <div className="hidden md:flex space-x-4">
+          <a className="text-white hover:text-gray-300" href="/Home">Home</a>
+          <a className="text-white hover:text-gray-300" href="/Dashboard">Dashboard</a>
+          <a className="text-white hover:text-gray-300" href="/addTask">New Task</a>
+          <a className="text-white hover:text-gray-300" href="#" onClick={handleLogout}>Logout</a>
         </div>
-        </nav>
-      </>
-    )
-  }
-  
-  export default Navigation
-  
+        {/* Hamburger button for mobile view */}
+        <button className="md:hidden text-white focus:outline-none">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+      </div>
+      {/* Dropdown menu for mobile */}
+      <div id="navbarMenu" className="hidden md:hidden">
+        <div className="bg-gray-700 p-4 space-y-2">
+          <a className="text-white block hover:text-gray-300" href="/Home">Home</a>
+          <a className="text-white block hover:text-gray-300" href="/Dashboard">Dashboard</a>
+          <a className="text-white block hover:text-gray-300" href="/addTask">New Task</a>
+          <a className="text-white block hover:text-gray-300" href="#" onClick={handleLogout}>Logout</a>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+export default Navigation;

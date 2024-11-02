@@ -1,5 +1,5 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import 'primereact/resources/themes/saga-blue/theme.css'; // Make sure to import necessary styles
+import 'primereact/resources/themes/saga-blue/theme.css'; // Necessary styles for PrimeReact
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import { LoginTask } from "../API/apiService";
@@ -49,32 +49,34 @@ function Login() {
 
   return (
     <>
-      <div className="bg-dark p-5 vh-100">
+      <div className="bg-gray-900 p-5 min-h-screen flex items-center justify-center">
         <Toast ref={toast} position="top-right" />
-        <div className="login mt-5 fw-bold shadow-lg bg-body-tertiary rounded">
+        <div className="bg-white w-full max-w-sm p-8 rounded-lg shadow-lg">
           <form onSubmit={handleOnSubmit}>
-            <h1 className="text-center fw-bold fs-3 m-3 p-2">
+            <h1 className="text-center text-2xl font-bold mb-6">
               <i className="bi bi-list-task"></i> Task Management Login
             </h1>
-            <div className="mb-3 mt-5">
-              <label className="form-label">Email</label>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="form-control"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
               />
             </div>
-            <div className="mb-3">
-              <label className="form-label">Password</label>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="form-control"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
               />
             </div>
-            <button type="submit" className="btn btn-warning w-100 fw-bold">
+            <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded w-full">
               Login
             </button>
           </form>

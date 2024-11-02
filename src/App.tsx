@@ -5,6 +5,7 @@ import Create from './pages/Create'
 import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import { AuthProvider } from './auth/Auth'
+import './tailwind.css'; 
 
 function App() {
   return (
